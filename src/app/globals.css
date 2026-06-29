@@ -1,26 +1,165 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f5f0;
+  --foreground: #151820;
+  --surface: #ffffff;
+  --muted: #5a5f6e;
+  --border: #e0ddd4;
+  --accent: #b85c38;
+  --accent-foreground: #ffffff;
+  --accent-glow: rgba(184, 92, 56, 0.35);
+  --secondary: #2a6b6b;
+  /* Elevation — warm-tinted so shadows sit inside the editorial palette. */
+  --shadow-sm: 0 1px 2px rgba(21, 24, 32, 0.04), 0 2px 6px rgba(21, 24, 32, 0.05);
+  --shadow-md: 0 6px 16px -6px rgba(21, 24, 32, 0.12), 0 2px 6px -2px rgba(21, 24, 32, 0.08);
+  --shadow-lg: 0 24px 48px -16px rgba(21, 24, 32, 0.18);
+  --node-color: 184, 92, 56;
+}
+
+.dark {
+  --background: #0f1117;
+  --foreground: #e8e4dc;
+  --surface: #181b24;
+  --muted: #9a9590;
+  --border: #2a2e3a;
+  --accent: #d4845a;
+  --accent-foreground: #0f1117;
+  --accent-glow: rgba(212, 132, 90, 0.25);
+  --secondary: #4a9b9b;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 8px 20px -8px rgba(0, 0, 0, 0.5), 0 2px 6px -2px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 28px 56px -18px rgba(0, 0, 0, 0.6);
+  --node-color: 212, 132, 90;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-glow: var(--accent-glow);
+  --color-secondary: var(--secondary);
+  --font-display: var(--font-syne);
+  --font-body: var(--font-source-serif);
+  --font-mono: var(--font-ibm-plex-mono);
+  --shadow-elev-sm: var(--shadow-sm);
+  --shadow-elev-md: var(--shadow-md);
+  --shadow-elev-lg: var(--shadow-lg);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), Georgia, serif;
+  font-size: 18px;
+  line-height: 1.6;
+  /* Ambient mesh — two soft accent/secondary fields for depth, not color change. */
+  background-image:
+    radial-gradient(60rem 60rem at 78% -8%, var(--accent-glow), transparent 60%),
+    radial-gradient(48rem 48rem at -10% 18%, color-mix(in oklab, var(--secondary) 14%, transparent), transparent 55%);
+  background-attachment: fixed;
+}
+
+.font-display {
+  font-family: var(--font-display), system-ui, sans-serif;
+}
+
+.font-mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+/* Accent gradient text — used sparingly on key headline words. */
+.text-gradient {
+  background: linear-gradient(
+    100deg,
+    var(--accent) 0%,
+    color-mix(in oklab, var(--accent) 60%, var(--secondary)) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Hairline gradient hover-ring for cards. */
+.ring-gradient {
+  position: relative;
+}
+.ring-gradient::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    140deg,
+    color-mix(in oklab, var(--accent) 55%, transparent),
+    transparent 45%,
+    color-mix(in oklab, var(--secondary) 45%, transparent)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.ring-gradient:hover::after {
+  opacity: 1;
+}
+
+/* Animated underline for inline links. */
+.link-underline {
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-size: 0% 1.5px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.3s ease;
+}
+.link-underline:hover {
+  background-size: 100% 1.5px;
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-float {
+  animation: float-y 6s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -150% 0; }
+  100% { background-position: 250% 0; }
+}
+
+/* Honor user motion preferences across every ambient/decorative animation. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-float {
+    animation: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

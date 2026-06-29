@@ -1,0 +1,11 @@
+services:
+  web:
+    build:
+      context: .
+    image: harry-portfolio
+    container_name: harry-portfolio
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
