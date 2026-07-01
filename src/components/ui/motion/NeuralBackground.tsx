@@ -38,7 +38,9 @@ export function NeuralBackground({ className }: NeuralBackgroundProps) {
     let height = 0;
     let nodes: Node[] = [];
     let raf = 0;
-    let running = true;
+    let onScreen = true;
+    let pageVisible = !document.hidden;
+    let io: IntersectionObserver | null = null;
     const mouse = { x: -9999, y: -9999 };
 
     let rgb = "184, 92, 56";
@@ -107,7 +109,6 @@ export function NeuralBackground({ className }: NeuralBackgroundProps) {
     };
 
     const step = () => {
-      if (!running) return;
       for (const n of nodes) {
         n.x += n.vx;
         n.y += n.vy;
@@ -120,6 +121,18 @@ export function NeuralBackground({ className }: NeuralBackgroundProps) {
       raf = requestAnimationFrame(step);
     };
 
+    // Only animate while on-screen and the tab is visible — never spend the
+    // main thread painting a canvas nobody can see, which keeps scrolling smooth.
+    const active = () => onScreen && pageVisible && !reduce;
+    const sync = () => {
+      if (active()) {
+        if (!raf) raf = requestAnimationFrame(step);
+      } else if (raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+    };
+
     const onMouseMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
       mouse.x = e.clientX - rect.left;
@@ -130,11 +143,8 @@ export function NeuralBackground({ className }: NeuralBackgroundProps) {
       mouse.y = -9999;
     };
     const onVisibility = () => {
-      running = !document.hidden;
-      if (running && !reduce) {
-        cancelAnimationFrame(raf);
-        raf = requestAnimationFrame(step);
-      }
+      pageVisible = !document.hidden;
+      sync();
     };
 
     readColor();
@@ -143,10 +153,18 @@ export function NeuralBackground({ className }: NeuralBackgroundProps) {
     if (reduce) {
       draw();
     } else {
-      raf = requestAnimationFrame(step);
       window.addEventListener("mousemove", onMouseMove, { passive: true });
       window.addEventListener("mouseout", onMouseLeave, { passive: true });
       document.addEventListener("visibilitychange", onVisibility);
+      io = new IntersectionObserver(
+        (entries) => {
+          onScreen = entries[0]?.isIntersecting ?? true;
+          sync();
+        },
+        { threshold: 0 },
+      );
+      io.observe(canvas);
+      sync();
     }
 
     const resizeObserver = new ResizeObserver(() => {
@@ -166,8 +184,9 @@ export function NeuralBackground({ className }: NeuralBackgroundProps) {
     });
 
     return () => {
-      running = false;
       cancelAnimationFrame(raf);
+      raf = 0;
+      io?.disconnect();
       resizeObserver.disconnect();
       themeObserver.disconnect();
       window.removeEventListener("mousemove", onMouseMove);

@@ -2,11 +2,14 @@ export interface Profile {
   name: string;
   title: string;
   tagline: string;
+  /** Hero intro — a couple of sentences that sit directly under the name. */
+  intro: string;
   summary: string;
   location: string;
   email: string;
   phone: string;
   linkedin: string;
+  github: string;
   yearsExperience: number;
   stats: Stat[];
   /** Production-impact numbers for the "In production" metrics band. */

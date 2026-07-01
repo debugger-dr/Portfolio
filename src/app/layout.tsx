@@ -1,21 +1,23 @@
 import type { Metadata } from "next";
-import { Syne, Source_Serif_4, IBM_Plex_Mono } from "next/font/google";
+import { Inter, Inter_Tight, IBM_Plex_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { profile } from "@/data";
 import "./globals.css";
 
-const syne = Syne({
-  variable: "--font-syne",
+// Display: Inter Tight — confident, tightly-set headings.
+const interTight = Inter_Tight({
+  variable: "--font-inter-tight",
   subsets: ["latin"],
-  weight: ["400", "600", "700", "800"],
+  weight: ["500", "600", "700"],
 });
 
-const sourceSerif = Source_Serif_4({
-  variable: "--font-source-serif",
+// Body: Inter — clean, highly legible, professional.
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["400", "600"],
+  weight: ["400", "500", "600"],
 });
 
 const ibmPlexMono = IBM_Plex_Mono({
@@ -40,8 +42,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${syne.variable} ${sourceSerif.variable} ${ibmPlexMono.variable} h-full`}>
+    <html lang="en" suppressHydrationWarning className={`${interTight.variable} ${inter.variable} ${ibmPlexMono.variable} h-full`}>
       <body className="min-h-full antialiased">
+        {/* Ambient mesh on its own composited layer — no scroll repaint. */}
+        <div aria-hidden className="ambient-mesh" />
         <ThemeProvider>
           <Header />
           <main>{children}</main>

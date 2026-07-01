@@ -56,6 +56,17 @@ export function Contact() {
                   </a>
                 </ContactDetail>
 
+                <ContactDetail label="GitHub">
+                  <a
+                    href={profile.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="link-underline text-lg text-foreground md:text-xl"
+                  >
+                    {profile.github.replace("https://", "")}
+                  </a>
+                </ContactDetail>
+
                 <ContactDetail label="Location">
                   <p className="text-lg text-foreground md:text-xl">{profile.location}</p>
                 </ContactDetail>

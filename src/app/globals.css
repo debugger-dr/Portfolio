@@ -1,36 +1,37 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f7f5f0;
-  --foreground: #151820;
+  /* Graphite & Cobalt — cool graphite paper, ink text, one deep cobalt signal. */
+  --background: #f3f4f6;
+  --foreground: #171a21;
   --surface: #ffffff;
-  --muted: #5a5f6e;
-  --border: #e0ddd4;
-  --accent: #b85c38;
+  --muted: #596273;
+  --border: #e3e5ea;
+  --accent: #3352cc;
   --accent-foreground: #ffffff;
-  --accent-glow: rgba(184, 92, 56, 0.35);
-  --secondary: #2a6b6b;
-  /* Elevation — warm-tinted so shadows sit inside the editorial palette. */
-  --shadow-sm: 0 1px 2px rgba(21, 24, 32, 0.04), 0 2px 6px rgba(21, 24, 32, 0.05);
-  --shadow-md: 0 6px 16px -6px rgba(21, 24, 32, 0.12), 0 2px 6px -2px rgba(21, 24, 32, 0.08);
-  --shadow-lg: 0 24px 48px -16px rgba(21, 24, 32, 0.18);
-  --node-color: 184, 92, 56;
+  --accent-glow: rgba(51, 82, 204, 0.18);
+  --secondary: #5b6b9c;
+  /* Elevation — cool graphite shadows tuned to the ink foreground. */
+  --shadow-sm: 0 1px 2px rgba(23, 26, 33, 0.04), 0 2px 6px rgba(23, 26, 33, 0.06);
+  --shadow-md: 0 6px 16px -6px rgba(23, 26, 33, 0.12), 0 2px 6px -2px rgba(23, 26, 33, 0.08);
+  --shadow-lg: 0 24px 48px -16px rgba(23, 26, 33, 0.16);
+  --node-color: 51, 82, 204;
 }
 
 .dark {
-  --background: #0f1117;
-  --foreground: #e8e4dc;
-  --surface: #181b24;
-  --muted: #9a9590;
-  --border: #2a2e3a;
-  --accent: #d4845a;
-  --accent-foreground: #0f1117;
-  --accent-glow: rgba(212, 132, 90, 0.25);
-  --secondary: #4a9b9b;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.25);
+  --background: #0d0f14;
+  --foreground: #e7e9ee;
+  --surface: #14171f;
+  --muted: #8b93a3;
+  --border: #232833;
+  --accent: #6b8aff;
+  --accent-foreground: #0d0f14;
+  --accent-glow: rgba(107, 138, 255, 0.22);
+  --secondary: #7c8bc4;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 8px 20px -8px rgba(0, 0, 0, 0.5), 0 2px 6px -2px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 28px 56px -18px rgba(0, 0, 0, 0.6);
-  --node-color: 212, 132, 90;
+  --node-color: 107, 138, 255;
 }
 
 @theme inline {
@@ -43,8 +44,8 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-accent-glow: var(--accent-glow);
   --color-secondary: var(--secondary);
-  --font-display: var(--font-syne);
-  --font-body: var(--font-source-serif);
+  --font-display: var(--font-inter-tight);
+  --font-body: var(--font-inter);
   --font-mono: var(--font-ibm-plex-mono);
   --shadow-elev-sm: var(--shadow-sm);
   --shadow-elev-md: var(--shadow-md);
@@ -58,18 +59,31 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-body), Georgia, serif;
-  font-size: 18px;
-  line-height: 1.6;
-  /* Ambient mesh — two soft accent/secondary fields for depth, not color change. */
+  font-family: var(--font-body), system-ui, -apple-system, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+  letter-spacing: -0.006em;
+}
+
+/*
+ * Ambient mesh — two soft accent/secondary fields for depth. Rendered on a
+ * position:fixed layer (via a dedicated element in the layout) so the browser
+ * composites it once instead of repainting on every scroll frame, which is
+ * what `background-attachment: fixed` used to cost.
+ */
+.ambient-mesh {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background-image:
     radial-gradient(60rem 60rem at 78% -8%, var(--accent-glow), transparent 60%),
     radial-gradient(48rem 48rem at -10% 18%, color-mix(in oklab, var(--secondary) 14%, transparent), transparent 55%);
-  background-attachment: fixed;
 }
 
 .font-display {
   font-family: var(--font-display), system-ui, sans-serif;
+  letter-spacing: -0.018em;
 }
 
 .font-mono {
@@ -79,18 +93,6 @@ body {
 ::selection {
   background: var(--accent);
   color: var(--accent-foreground);
-}
-
-/* Accent gradient text — used sparingly on key headline words. */
-.text-gradient {
-  background: linear-gradient(
-    100deg,
-    var(--accent) 0%,
-    color-mix(in oklab, var(--accent) 60%, var(--secondary)) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
 
 /* Hairline gradient hover-ring for cards. */

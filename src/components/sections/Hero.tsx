@@ -44,16 +44,16 @@ export function Hero() {
           <h1 className="font-display text-[clamp(3rem,8vw,6.5rem)] font-bold leading-[0.95] tracking-tight text-foreground">
             {nameParts.map((word, i) => (
               <motion.span key={word} variants={item} className="block">
-                {i === 1 ? <span className="text-gradient">{word}</span> : word}
+                {i === 1 ? <span className="text-accent">{word}</span> : word}
               </motion.span>
             ))}
           </h1>
 
           <motion.p
             variants={item}
-            className="mt-8 max-w-2xl text-xl leading-relaxed text-muted md:text-2xl md:leading-relaxed"
+            className="mt-8 max-w-2xl text-lg leading-relaxed text-muted md:text-xl md:leading-relaxed"
           >
-            {profile.tagline}
+            {profile.intro}
           </motion.p>
 
           <motion.div variants={item} className="mt-12 flex flex-wrap gap-4">
@@ -61,12 +61,10 @@ export function Hero() {
               <ContactButton email={profile.email} />
             </MagneticButton>
             <a
-              href={profile.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#projects"
               className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-border px-8 py-4 text-lg font-medium text-foreground transition-all hover:border-accent hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
-              LinkedIn
+              View projects
             </a>
           </motion.div>
         </div>
